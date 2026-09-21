@@ -1,6 +1,4 @@
 # 💸 AI Finance SaaS Platform
-
-A full-stack finance management SaaS built on the MERN stack, designed to help users track income, expenses, and financial health — powered by Stripe billing and AI-driven insights.
 ---
 
 ## 📖 Overview
