@@ -1,12 +1,12 @@
-💸 AI Finance SaaS Platform
+#💸 AI Finance SaaS Platform
 
- 📖 Overview
+## 📖 Overview
 
 This project is a production-style SaaS application for personal finance management. Users can track their income and expenses, visualize spending trends through an analytics dashboard, import transactions in bulk via CSV, and receive AI-generated insights about their financial habits — all behind a subscription paywall powered by Stripe.
 
 ---
 
-✨ Features
+##✨ Features
 
 - 🔐 **Secure Authentication** — JWT-based auth with protected routes
 - 💳 **Subscription Billing** — Stripe integration with webhook handling, idempotency safeguards, and free-trial logic
@@ -17,7 +17,7 @@ This project is a production-style SaaS application for personal finance managem
 
 ---
 
- 🛠️ Tech Stack
+## 🛠️ Tech Stack
 
 | Layer          | Technology                          |
 |----------------|--------------------------------------|
