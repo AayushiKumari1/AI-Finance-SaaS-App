@@ -1,4 +1,6 @@
-#💸 AI Finance SaaS Platform
+## 💸 AI Finance SaaS Platform
+
+---
 
 ## 📖 Overview
 
@@ -6,7 +8,7 @@ This project is a production-style SaaS application for personal finance managem
 
 ---
 
-##✨ Features
+## ✨ Features
 
 - 🔐 **Secure Authentication** — JWT-based auth with protected routes
 - 💳 **Subscription Billing** — Stripe integration with webhook handling, idempotency safeguards, and free-trial logic
