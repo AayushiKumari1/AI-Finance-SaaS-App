@@ -20,7 +20,7 @@ transactionRoutes.post("/bulk-transaction", bulkTransactionController )
 
 transactionRoutes.put("/duplicate/:id", duplicateTransactionController )
 transactionRoutes.put("/update/:id", updateTransactionController )
-transactionRoutes.put("/delete/:id", deleteTransactionController )
-transactionRoutes.put("/bulk-delete", bulkDeleteTransactionController )
+transactionRoutes.delete("/delete/:id", deleteTransactionController )
+transactionRoutes.delete("/bulk-delete", bulkDeleteTransactionController )
 
 export default transactionRoutes

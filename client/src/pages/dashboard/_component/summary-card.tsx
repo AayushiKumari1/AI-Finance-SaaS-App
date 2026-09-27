@@ -203,7 +203,7 @@ const SummaryCard: FC<SummaryCardProps> = ({
             <div className="flex items-center gap-1.5">
               <status.Icon className={cn("size-3.5", status.color)} />
               <span className={status.color}>
-                {status.label} {value !== 0 && `(${formatPercentage(value)})`}
+                {status.label} {value !== 0 && `(${formatPercentage(value, { decimalPlaces: 1 })})`}
               </span>
               {status.description && (
                 <span className="text-gray-400 ml-1">

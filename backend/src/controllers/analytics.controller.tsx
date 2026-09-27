@@ -72,7 +72,7 @@ export const expensePieChartBreakdownController = asyncHandler(
             customTo : to ? new Date(to as string) : undefined,
         }
 
-        const pieChartData = expensePieChartBreakdownService(
+        const pieChartData = await expensePieChartBreakdownService(
             userId,
             filter.dateRangePreset,
             filter.customFrom,

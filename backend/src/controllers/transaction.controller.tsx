@@ -112,10 +112,13 @@ export const deleteTransactionController = asyncHandler(
 
         const transactionId = transactionIdSchema.parse(req.params.id)
 
-        await deleteTransactionService(userId, transactionId)
+        const response = await deleteTransactionService(userId, transactionId)
+
+        console.log("SUCCESS RESPONSE:", response);
 
         return res.status(HTTPSTATUS.OK).json({
-            message : "Transaction Deleted Successfully"
+            message : "Transaction Deleted Successfully",
+            data: response
         })
     }
 )

@@ -238,7 +238,7 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
 // eslint-disable-next-line react-refresh/only-export-components
 const ActionsCell = ({ row }: { row: any }) => {
   //const isRecurring = row.original.isRecurring;
-  const transactionId = row.original.id;
+  const transactionId = row.original._id;
   const { onOpenDrawer } = useEditTransactionDrawer();
 
   const [duplicateTransaction, { isLoading: isDuplicating }] =

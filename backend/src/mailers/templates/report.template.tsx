@@ -14,8 +14,8 @@ export const getReportEmailTemplate = ( reportData : ReportType & { username : s
         topSpendingCategories,
         insights,
     } = reportData
-
-    const reportTitle = `${capitalizeFirstLetter} Report`
+    
+    const reportTitle = `${capitalizeFirstLetter(frequency)} Report`;
     
     const categoryList = topSpendingCategories.map(
         ( cat: any ) => 

@@ -1,4 +1,4 @@
-import { endOfMonth, startOfMonth, subMinutes, subMonths } from "date-fns"
+import { endOfMonth, startOfMonth, subMonths } from "date-fns"
 import type { UserDocument } from "../../models/user.model.js"
 import mongoose from "mongoose"
 import ReportModel, { ReportStatusEnum } from "../../models/report.model.js"
@@ -16,20 +16,42 @@ export const processReportJob = async() =>{
     let failedCount = 0
 
     // July 1st we will get data from June 1st
-    const from = startOfMonth(subMinutes(now,3))
-    const to = endOfMonth(subMonths(now,3))
+    const from = startOfMonth(subMonths(now,1))
+    const to = endOfMonth(subMonths(now,1))
 
     // const from = "2026-04-1T23:00:00:000Z"
     // const to = "2026-04-T23:00:00.000Z"
 
     try{
-        const reportSettingCursor = ReportSettingModel.find({
+        // const reportSettingCursor = ReportSettingModel.find({
 
-            isEnabled:true,
-            nextReportDate: { $lte: now },
-        }).populate<{userId:UserDocument}>("userId").cursor()
+        //     isEnabled:true,
+        //     nextReportDate: { $lte: now },
+        // }).populate<{userId:UserDocument}>("userId").cursor()
 
-        console.log("Running Report")
+        // console.log("Running Report")
+
+    console.log("NOW:", now)
+
+    const allSettings = await ReportSettingModel.find({}).lean()
+
+    console.log("ALL REPORT SETTINGS:", allSettings)
+
+    const eligibleSettings = await ReportSettingModel.find({
+        isEnabled: true,
+        nextReportDate: { $lte: now },
+    }).lean()
+
+    console.log("ELIGIBLE REPORT SETTINGS:", eligibleSettings)
+
+    const reportSettingCursor = ReportSettingModel.find({
+        isEnabled: true,
+        nextReportDate: { $lte: now },
+    })
+    .populate<{userId: UserDocument}>("userId")
+    .cursor()
+
+    console.log("Running Report")
 
         for await ( const setting of reportSettingCursor ){
 
@@ -40,6 +62,13 @@ export const processReportJob = async() =>{
                 console.log(`User not found for setting : ${setting._id}`)
                 continue
             }
+
+            console.log("========== REPORT USER ==========")
+            console.log("SETTING ID:", setting._id)
+            console.log("USER ID:", user._id)
+            console.log("USER NAME:", user.name)
+            console.log("USER EMAIL:", user.email)
+            console.log("=================================")
 
             const session = await mongoose.startSession()
 
@@ -53,18 +82,19 @@ export const processReportJob = async() =>{
                 if( report ){
 
                     try{
-                        sendReportEmail({
+                        await sendReportEmail({
                             email: user.email!,
-                            username: user.name!, report: {
-                            period: report.period,
-                            totalIncome: report.summary.income,
-                            totalExpenses: report.summary.expenses,
-                            availableBalance: report.summary.balance,
-                            savingsRate: report.summary.savingsRate,
-                            topSpendingCategories: report.summary.topCategories,
-                            insights: report.insights,
-                        },
-                        frequency: setting.frequency!,
+                            username: user.name!, 
+                            report: {
+                                period: report.period,
+                                totalIncome: report.summary.income,
+                                totalExpenses: report.summary.expenses,
+                                availableBalance: report.summary.balance,
+                                savingsRate: report.summary.savingsRate,
+                                topSpendingCategories: report.summary.topCategories,
+                                insights: report.insights,
+                            },
+                            frequency : setting.frequency!,
                         })
                         emailSent = true
                     }
@@ -88,7 +118,7 @@ export const processReportJob = async() =>{
                                     userId: user.id,
                                     sentDate : now,
                                     period : report?.period || `${format(from, 'MMMM d')} - ${format(to, "d, yyyy")}`, 
-                                    status: report ? ReportStatusEnum.FAILED : ReportStatusEnum.NO_ACTIVITY,
+                                    status: ReportStatusEnum.SENT,
                                     createdAt: now,
                                     updatedAt : now,
                                 },
@@ -97,7 +127,7 @@ export const processReportJob = async() =>{
 
                         bulkSetting.push({
 
-                            UpdateOne : {
+                            updateOne : {
                                 filter : { _id : setting._id },
                                 update: {
                                     $set: {
@@ -111,8 +141,8 @@ export const processReportJob = async() =>{
                     }
 
                     await Promise.all([
-                        ReportModel.bulkWrite( bulkReports, { ordered: false } ),
-                        ReportSettingModel.bulkWrite( bulkSetting, { ordered: false } )
+                        ReportModel.bulkWrite( bulkReports, { ordered: false, session } ),
+                        ReportSettingModel.bulkWrite( bulkSetting, { ordered: false, session } )
                     ])
                 },
                 {

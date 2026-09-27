@@ -26,7 +26,7 @@ export interface SummaryAnalyticsResponse {
     totalIncome: number;
     totalExpenses: number;
     transactionCount: number;
-    savingRate: {
+    savingsRate: {
       percentage: number;
       expenseRatio: number;
     };

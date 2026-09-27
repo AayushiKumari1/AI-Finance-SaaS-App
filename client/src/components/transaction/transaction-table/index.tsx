@@ -42,9 +42,10 @@ const TransactionTable = (props: {
     pageSize: filter.pageSize,
   });
 
+  console.log(data, "Data")
   
-  const transactions = data?.transactions || [];
-  console.log(transactions, "Transactions")
+  const transaction = data?.transaction || [];
+  console.log(transaction, "Transactions")
   const pagination = {
     totalItems: data?.pagination?.totalCount || 0,
     totalPages: data?.pagination?.totalPages || 0,
@@ -87,7 +88,7 @@ const TransactionTable = (props: {
 
   return (
     <DataTable
-      data={transactions} //transactions
+      data={transaction} //transactions
       columns={transactionColumns}
       searchPlaceholder="Search transactions..."
       isLoading={isFetching}

@@ -135,11 +135,24 @@ export function DataTable<TData>({
   };
 
   const handleDelete = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const selectedIds = selectedRows.map((row) => (row.original as any).id);
-    onBulkDelete?.(selectedIds);
-    setRowSelection({});
-  };
+      const selectedIds = selectedRows.map(
+        (row) => (row.original as any)._id
+      );
+
+      console.log("Bulk delete IDs:", selectedIds);
+
+      if (selectedIds.length === 0) return;
+
+      onBulkDelete?.(selectedIds);
+      setRowSelection({});
+    };
+  
+  // const handleDelete = () => {
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   const selectedIds = selectedRows.map((row) => (row.original as any).id);
+  //   onBulkDelete?.(selectedIds);
+  //   setRowSelection({});
+  // };
 
   return (
     <div className="w-full">

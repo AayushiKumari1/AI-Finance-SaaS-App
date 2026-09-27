@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import ReportModel from "../models/report.model.js"
+import ReportModel, { ReportStatusEnum } from "../models/report.model.js";
 import ReportSettingModel, { ReportFrequencyEnum } from "../models/report_setting.model.js"
 import transactionModel, { TransactionTypeEnum } from "../models/transaction.model.js"
 import { NotFoundException } from "../utils/app_error.js"
@@ -15,7 +15,11 @@ export const getAllReportService = async( userId: string, pagination:{
     pageSize:number,
     pageNumber:number
 }) =>{
-    const query : Record<string, any> = { userId }
+    // const query : Record<string, any> = { userId }
+
+    const query = {
+        userId: new mongoose.Types.ObjectId(userId),
+    };
 
     const { pageSize, pageNumber } = pagination
     const skip = ( pageNumber - 1 ) * pageSize
@@ -26,6 +30,11 @@ export const getAllReportService = async( userId: string, pagination:{
     ])
     
     const totalPages = Math.ceil(totalCount / pageSize)
+        console.log("REPORT HISTORY:", {
+        userId,
+        reports,
+        totalCount,
+    });
 
     return{
         reports,
@@ -174,7 +183,13 @@ export const generateReportService = async( userId: string, fromDate: Date, toDa
         },
     ])
 
-    if( !results?.length || ( results[0]?.totalIncome === 0 && results[0]?.totalExpense === 0 ) ) return null
+    if( !results?.length || 
+    ( 
+        results[0]?.totalIncome === 0 && results[0]?.totalExpenses === 0
+    )
+    ){
+        return null
+    }
 
     const { totalIncome, totalExpenses, categories } = results[0] || {}
     

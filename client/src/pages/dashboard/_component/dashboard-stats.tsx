@@ -9,6 +9,8 @@ const DashboardStats = ({ dateRange }: { dateRange?: DateRangeType }) => {
   );
   const summaryData = data?.data;
 
+  console.log(summaryData)
+
   return (
     <div className="flex flex-row items-center">
       <div className="flex-1 lg:flex-[1] grid grid-cols-1 lg:grid-cols-4 gap-4">
@@ -38,8 +40,8 @@ const DashboardStats = ({ dateRange }: { dateRange?: DateRangeType }) => {
         />
         <SummaryCard
           title="Savings Rate"
-          value={summaryData?.savingRate?.percentage}
-          expenseRatio={summaryData?.savingRate?.expenseRatio}
+          value={summaryData?.savingsRate?.percentage}
+          expenseRatio={summaryData?.savingsRate?.expenseRatio}
           isPercentageValue
           dateRange={dateRange}
           isLoading={isFetching}

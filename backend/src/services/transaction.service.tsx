@@ -20,7 +20,7 @@ export const createTransactionService = async( body : createTransactionType, use
         calculateNextOccurrence(currentDate, body.recurringInterval) : calculateDate
     }
 
-    const transactions = await transactionModel.create({
+    const transaction = await transactionModel.create({
 
         ...body,
         userId,
@@ -32,7 +32,7 @@ export const createTransactionService = async( body : createTransactionType, use
         lastProcessed : null,
     })
 
-    return transactions
+    return transaction
 }
 
 export const getAllTransactionService = async( userId : string, filters : {
@@ -184,9 +184,9 @@ export const updateTransactionService = async( userId : string, transactionId : 
 
 export const deleteTransactionService = async( userId : string, transactionId : string ) =>{
 
-    const deleted = await transactionModel.findByIdAndDelete({
-        _id : transactionId,
-        userId
+    const deleted = await transactionModel.findOneAndDelete({
+        _id: transactionId,
+        userId,
     })
 
     if( !deleted ) throw new NotFoundException("Transaction Not Found.")
@@ -201,12 +201,13 @@ export const bulkDeleteTransactionService = async( userId : string, transactionI
         userId
     })
 
-    if( result.deletedCount === 0 ) throw new NotFoundException("No Transaction Found.")
+    if (result.deletedCount === 0) {
+        throw new NotFoundException("No Transaction Found.");
+    }
 
-    return{
-
-        success : true,
-        deletCount : result.deletedCount
+    return {
+        success: true,
+        deleteCount: result.deletedCount,
     }
 }
 
