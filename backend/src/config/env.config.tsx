@@ -24,6 +24,12 @@ const envConfig = () => ({
     RESEND_API_KEY: getEnv("RESEND_API_KEY", ""),
     RESEND_MAILER_SENDER: getEnv("RESEND_MAILER_SENDER", ""),
 
+    STRIPE_SECRET_KEY: getEnv("STRIPE_SECRET_KEY", ""),
+    STRIPE_PRO_PRICE_ID: getEnv("STRIPE_PRO_PRICE_ID", ""),
+    STRIPE_WEBHOOK_SECRET: getEnv("STRIPE_WEBHOOK_SECRET", ""),
+
+    CLIENT_URL: getEnv("CLIENT_URL", "localhost"),
+
     FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN", "localhost"),
 })
 

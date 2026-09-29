@@ -8,7 +8,7 @@ const Logo = (props: { url?: string }) => {
     <div className="bg-green-500 text-white h-6.5 w-6.5 rounded flex items-center justify-center">
     <GalleryVerticalEnd className="size-4" />
     </div>
-    <span className="font-semibold text-lg">Finora</span>
+    <span className="font-semibold text-lg">Finova</span>
   </Link>
   )
 }

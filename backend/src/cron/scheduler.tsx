@@ -29,7 +29,7 @@ export const startJobs = () =>{
     return[
         scheduleJob('Transactions', '5 0 * * *', processRecurringTransactions),
 
-        // 2:30 AM Every First of the Month
-        scheduleJob("Reports", "* * * * *", processReportJob )
+        // 9:00 AM Every First of the Month
+        scheduleJob("Reports", "0 9 1 * *" ,processReportJob )
     ]
 }

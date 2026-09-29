@@ -22,10 +22,10 @@ const SignIn = () => {
         <div className="absolute inset-0 flex flex-col items-end justify-end pt-8 pl-8">
           <div className="w-full max-w-3xl mx-0 pr-5">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Hi, I'm your AI-powered personal finance app, FinMind!
+              Hi, I'm your AI-powered personal finance app, Finova!
             </h1>
             <p className="mt-4 text-gray-600 dark:text-muted-foreground">
-            FinMind provides insights, monthly reports, CSV import, recurring transactions, all powered by advanced AI technology. 🚀
+            Finova provides insights, monthly reports, CSV import, recurring transactions, all powered by advanced AI technology. 
             </p>
           </div>
           <div className="relative max-w-3xl h-full w-full overflow-hidden mt-3">

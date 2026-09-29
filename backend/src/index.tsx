@@ -20,6 +20,7 @@ import { intializeCrons } from './cron/index.js'
 import reportRoutes from './routes/report.route.js'
 import { getDateRange } from './utils/date.js'
 import analyticsRoutes from './routes/analytics.route.js'
+import billingRoutes from './routes/billing.route.js'
 
 const app = express()
 const BASE_PATH = Env.BASE_PATH
@@ -54,6 +55,7 @@ app.use(`${BASE_PATH}/transaction`, passportAuthenticateJwt, transactionRoutes )
 
 app.use(`${BASE_PATH}/report`, passportAuthenticateJwt, reportRoutes )
 app.use(`${BASE_PATH}/analytics`, passportAuthenticateJwt, analyticsRoutes )
+app.use("/api/billing", passportAuthenticateJwt, billingRoutes )
 
 app.use( errorHandler ) // We are going to last Middleware before the App.listen()
 

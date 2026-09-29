@@ -246,46 +246,74 @@ async function generateInsightsAI({
     categories,
     periodLabel,
 }: {
-    totalIncome : number,
-    totalExpenses : number,
-    availableBalance : number,
-    savingsRate : number,
-    categories : Record<string, { amount: number; percentage:number } >,
-    periodLabel : string,
+    totalIncome: number,
+    totalExpenses: number,
+    availableBalance: number,
+    savingsRate: number,
+    categories: Record<string, { amount: number; percentage: number }>,
+    periodLabel: string,
 }) {
-    try{
+    try {
         const prompt = reportInsightPrompt({
-            totalIncome : convertToDollarUnit(totalIncome),
-            totalExpenses : convertToDollarUnit(totalExpenses),
-            availableBalance : convertToDollarUnit(availableBalance),
-            savingsRate : Number(savingsRate.toFixed(1)),
+            totalIncome: convertToDollarUnit(totalIncome),
+            totalExpenses: convertToDollarUnit(totalExpenses),
+            availableBalance: convertToDollarUnit(availableBalance),
+            savingsRate: Number(savingsRate.toFixed(1)),
             categories,
             periodLabel,
         })
 
-        console.log("AI Prompt", prompt)
+        console.log("========== AI INSIGHTS ==========")
+        console.log("AI PROMPT:", prompt)
 
         const result = await genAI.models.generateContent({
             model: genAIModel,
-            contents : [ createUserContent([prompt]) ],
+            contents: [createUserContent([prompt])],
             config: {
-                responseMimeType : "application/json"
+                responseMimeType: "application/json",
             },
         })
 
+        console.log("AI RAW RESULT:", result)
+
         const response = result.text
 
-        console.log(response)
-        
-        const cleanedText = response?.replace(/```(?:json)?\n?/g, "").trim()
+        console.log("AI RESPONSE TEXT:", response)
 
-        if( ! cleanedText ) return []
+        if (!response) {
+            console.error("AI returned empty response")
+            return []
+        }
+
+        const cleanedText = response
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+            .trim()
+
+        console.log("CLEANED AI RESPONSE:", cleanedText)
 
         const data = JSON.parse(cleanedText)
-        return data
 
-    }
-    catch(error){
+        console.log("PARSED AI DATA:", data)
+        console.log("PARSED AI DATA TYPE:", typeof data)
+        console.log("IS ARRAY:", Array.isArray(data))
+
+        if (Array.isArray(data)) {
+            return data
+        }
+
+        // If Gemini returns { insights: [...] }
+        if (Array.isArray(data.insights)) {
+            return data.insights
+        }
+
+        console.error("Unexpected AI response structure:", data)
+
+        return []
+    } catch (error) {
+        console.error("========== AI INSIGHTS ERROR ==========")
+        console.error(error)
+        console.error("=======================================")
 
         return []
     }
