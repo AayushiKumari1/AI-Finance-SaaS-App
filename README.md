@@ -27,5 +27,5 @@ This project is a production-style SaaS application for personal finance managem
 | Backend        | Node.js, Express.js                  |
 | Database       | MongoDB, Mongoose                    |
 | Authentication | JWT                                  |
-| Payments       | Stripe (Billing + Webhooks)          |
+| Payments       | Razorpay (Billing + Webhooks)          |
 | AI             | LLM-based insights engine            |
