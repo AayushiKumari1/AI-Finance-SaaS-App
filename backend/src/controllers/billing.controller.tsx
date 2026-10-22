@@ -1,58 +1,69 @@
 import type { Request, Response } from "express"
-import { stripe } from "../config/stripe.config.js"
-import { Env } from "../config/env.config.js"
+import { asyncHandler } from "../middlewares/asyncHandler.middleware.js"
+import { HTTPSTATUS } from "../config/http.config.js"
+import { verifySubscriptionSchema } from "../validators/billing.validator.js"
+import {
+    cancelSubscriptionService,
+    createProSubscriptionService,
+    hasProAccess,
+    verifySubscriptionService,
+} from "../services/billing.service.js"
 
-export const createCheckoutSession = async (
-    req: Request,
-    res: Response
-) => {
-    try {
-        const user = req.user
+const billingSummary = (user: {
+    subscriptionPlan?: string | null
+    subscriptionStatus?: string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean | null
+}) => ({
+    plan: user.subscriptionPlan ?? "FREE",
+    status: user.subscriptionStatus ?? "none",
+    currentPeriodEnd: user.currentPeriodEnd ?? null,
+    cancelAtPeriodEnd: Boolean(user.cancelAtPeriodEnd),
+    hasProAccess: hasProAccess(user),
+})
 
-        if (!user) {
-            return res.status(401).json({
-                message: "Unauthorized",
-            })
-        }
+export const createSubscriptionController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const userId = String(req.user?._id)
+        const data = await createProSubscriptionService(userId)
 
-        const session =
-            await stripe.checkout.sessions.create({
-                mode: "subscription",
-
-                line_items: [
-                    {
-                        price: Env.STRIPE_PRO_PRICE_ID,
-                        quantity: 1,
-                    },
-                ],
-
-                customer_email: user.email,
-
-                success_url:
-                    `${Env.CLIENT_URL}/subscription/success`,
-
-                cancel_url:
-                    `${Env.CLIENT_URL}/subscription/cancel`,
-
-                metadata: {
-                    userId: user._id.toString(),
-                    plan: "PRO",
-                },
-            })
-
-        return res.status(200).json({
-            url: session.url,
-        })
-
-    } catch (error) {
-
-        console.error(
-            "CREATE CHECKOUT ERROR:",
-            error
-        )
-
-        return res.status(500).json({
-            message: "Unable to create checkout session",
+        return res.status(HTTPSTATUS.OK).json({
+            message: "Subscription created.",
+            ...data,
         })
     }
-}
+)
+
+export const verifySubscriptionController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const userId = String(req.user?._id)
+        const body = verifySubscriptionSchema.parse(req.body)
+        const user = await verifySubscriptionService(userId, body)
+
+        return res.status(HTTPSTATUS.OK).json({
+            message: "Payment verified.",
+            ...billingSummary(user),
+        })
+    }
+)
+
+export const getBillingStatusController = asyncHandler(
+    async (req: Request, res: Response) => {
+        return res.status(HTTPSTATUS.OK).json({
+            message: "Billing status fetched.",
+            ...billingSummary(req.user ?? {}),
+        })
+    }
+)
+
+export const cancelSubscriptionController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const userId = String(req.user?._id)
+        const user = await cancelSubscriptionService(userId)
+
+        return res.status(HTTPSTATUS.OK).json({
+            message: "Subscription will be cancelled at the end of the billing period.",
+            ...billingSummary(user),
+        })
+    }
+)

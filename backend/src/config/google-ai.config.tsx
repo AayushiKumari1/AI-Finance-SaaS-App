@@ -5,6 +5,6 @@ export const genAI = new GoogleGenAI({
     apiKey: Env.GEMINI_API_KEY,
 });
 
-export const genAIModel = "gemini-3.8-flash"
+export const genAIModel = "gemini-3.7-flash"
 
 // https://aistudio.google.com/docs/text-generation
