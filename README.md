@@ -1,4 +1,4 @@
-# 💸 Finova.AI — AI-Powered Finance SaaS
+# Finova.AI — AI-Powered Finance SaaS
 
 A full-stack personal finance SaaS that helps users track income and expenses, understand their spending through an analytics dashboard, and get AI-generated insights. It includes AI receipt scanning, recurring transactions, scheduled monthly email reports, and a Pro subscription tier billed through Razorpay.
 
@@ -33,16 +33,6 @@ A full-stack personal finance SaaS that helps users track income and expenses, u
 | File Uploads   | Multer + Cloudinary                                     |
 | Email          | Resend                                                  |
 | Scheduling     | node-cron                                               |
-
----
-
-## 💳 How Billing Works
-
-1. The user clicks **Upgrade to Pro** and the backend creates a Razorpay subscription linked to their account.
-2. Razorpay Checkout opens in the browser and the user authorizes the payment.
-3. The backend verifies the checkout signature (HMAC-SHA256) and confirms the subscription status with Razorpay before granting Pro.
-4. Razorpay webhooks (`subscription.activated`, `charged`, `pending`, `halted`, `cancelled`, etc.) keep the user's plan in sync for renewals and failures. Each webhook is signature-verified against the raw request body, and processed events are stored with a unique index so retries are never applied twice.
-5. Cancelling keeps Pro access until the end of the paid billing period.
 
 ---
 
