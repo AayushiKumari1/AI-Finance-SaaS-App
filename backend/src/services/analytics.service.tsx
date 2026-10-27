@@ -259,13 +259,12 @@ export const summaryAnalyticsService = async (
     );
 
     let percentageChange = {
-        income: 0,
-        expenses: 0,
-        balance: 0,
+        income: 0 as number | null,
+        expenses: 0 as number | null,
+        balance: 0 as number | null,
         prevPeriodFrom: null as Date | null,
         prevPeriodTo: null as Date | null,
     };
-
 
     let previousValues = {
         incomeAmount: 0,
