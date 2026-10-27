@@ -151,9 +151,7 @@ app.listen( Env.PORT, async()=>{
 
     await connectDatabase()
     
-    if( Env.NODE_ENV === "development" ){
-        await intializeCrons()
-    }
+    await intializeCrons()
 
     console.log( `Server is runnung on PORT ${ Env.PORT } in ${ Env.NODE_ENV } node`)
 })

@@ -138,25 +138,45 @@ const TransactionForm = (props: {
     })
   );
 
-  const handleScanComplete = (data: AIScanReceiptData) => {
+  // const handleScanComplete = (data: AIScanReceiptData) => {
+  //   form.reset({
+  //     ...form.getValues(),
+  //     title: data.title || "",
+  //     amount: data.amount.toString(),
+  //     type: data.type || _TRANSACTION_TYPE.EXPENSE,
+  //     category: data.category?.toLowerCase() || "",
+  //     date: new Date(data.date),
+  //     paymentMethod: data.paymentMethod || "",
+  //     isRecurring: false,
+  //     frequency: null,
+  //     description: data.description || "",
+  //     receiptUrl: data.receiptUrl || "",
+  //   });
+  // };
+
+    const handleScanComplete = (data: AIScanReceiptData) => {
+    if (!data || data.amount == null) {
+      toast.error("Couldn't read the receipt details. Please fill them in manually.");
+      return;
+    }
+
     form.reset({
       ...form.getValues(),
       title: data.title || "",
-      amount: data.amount.toString(),
+      amount: data.amount?.toString() ?? "",
       type: data.type || _TRANSACTION_TYPE.EXPENSE,
       category: data.category?.toLowerCase() || "",
-      date: new Date(data.date),
+      date: data.date ? new Date(data.date) : new Date(),
       paymentMethod: data.paymentMethod || "",
       isRecurring: false,
       frequency: null,
       description: data.description || "",
       receiptUrl: data.receiptUrl || "",
     });
-  };
+  };  
 
-  // Handle form submission
   const onSubmit = (values: FormValues) => {
-    // if (isCreating || isUpdating) return;
+
     console.log("Form submitted:", values);
     const payload = {
       title: values.title,
@@ -168,6 +188,7 @@ const TransactionForm = (props: {
       date: values.date.toISOString(),
       isRecurring: values.isRecurring || false,
       recurringInterval: values.frequency || null,
+      receiptUrl: values.receiptUrl || "",
     };
     if (isEdit && transactionId) {
       updateTransaction({ id: transactionId, transaction: payload })

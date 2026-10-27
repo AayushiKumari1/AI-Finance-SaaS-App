@@ -156,14 +156,33 @@ export const bulkTransactionController = asyncHandler(
     }
 )
 
-export const scanReceiptController = asyncHandler( 
+// export const scanReceiptController = asyncHandler( 
     
+//     async ( req : Request, res : Response ) =>{
+
+//         const file = req?.file
+        
+//         const result = await receiptScanService(file)
+        
+//         return res.status(HTTPSTATUS.OK).json({
+//             message: "Receipt Scanned Successfully",
+//             data: result,
+//         })
+//     }
+// )
+
+export const scanReceiptController = asyncHandler(
     async ( req : Request, res : Response ) =>{
 
         const file = req?.file
-        
         const result = await receiptScanService(file)
-        
+
+        if ("error" in result) {
+            return res.status(HTTPSTATUS.BAD_REQUEST).json({
+                message: result.error,
+            })
+        }
+
         return res.status(HTTPSTATUS.OK).json({
             message: "Receipt Scanned Successfully",
             data: result,
