@@ -22,13 +22,7 @@ const safeEqualHex = (a: string, b: string) => {
 const hmacSha256Hex = (secret: string, payload: string | Buffer) =>
     crypto.createHmac("sha256", secret).update(payload).digest("hex")
 
-/**
- * Does this user currently get Pro features?
- *  - active                       -> yes
- *  - pending (a renewal charge failed, Razorpay is retrying) -> yes (grace period)
- *  - cancelled but period not over -> yes until currentPeriodEnd (they already paid for it)
- *  - everything else              -> no
- */
+
 export const hasProAccess = (user: {
     subscriptionPlan?: string | null
     subscriptionStatus?: string | null
@@ -100,15 +94,12 @@ export const syncUserFromSubscription = async (
             break
 
         default:
-            // created / authenticated: mandate set up, but no money charged yet -> no Pro yet.
             break
     }
 
     await user.save()
     return user
 }
-
-// ---------- use-cases called by controllers ----------
 
 export const createProSubscriptionService = async (userId: string) => {
     if (!isRazorpayConfigured()) {
